@@ -22,28 +22,28 @@ def parse_genome(genome):
                 id_1 += c
                 declarations.append((id_1, value_1))
                 state = 0
-            else if state == 2:
+            elif state == 2:
                 id_1 += c
                 state = 3
-            else if state = 3:
+            elif state == 3:
                 id_2 += c
                 links.append((id_1, value_1, id_2, value_2))
                 state = 0
-        else if c in string.ascii_uppercase:
+        elif c in string.ascii_uppercase:
             if state == 1 or state == 2:
                 id_1 += c
-            else if state == 3:
+            elif state == 3:
                 id_2 += c
-        else if c.is_digit():
+        elif c.isdigit():
             if state == 1 or state == 2:
                 value_1 = 10 * value_1 + int(c)
-            else if state == 3:
+            elif state == 3:
                 value_2 = 10 * value_1 + int(c)
-        else if c == '+':
+        elif c == '+':
             id_1 = ""
             value_1 = 0
             state = 1
-        else if c == '-':
+        elif c == '-':
             id_1 = ""
             value_1 = 0
             id_2 = ""
