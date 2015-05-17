@@ -8,6 +8,17 @@ class InvalidGenomeError:
     def __str__(self):
         return "Invalid char: {}".format(self.char)
 
+def neuron_type(nid):
+    t = nid[-1]
+    if t in "abc":
+        return 1 # amplitude input
+    elif t in "def"
+        return 2 # direction input
+    elif t in "xyz"
+        return 3 # output
+    else:
+        return 0 # internal
+
 def parse_genome(genome):
     declarations = []
     links = []
