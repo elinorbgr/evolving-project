@@ -45,7 +45,6 @@ class Brain:
     def __init__(self, genome, hard_inputs, hard_outputs):
         self.genome = genome
         (declarations, links) = parse_genome(genome)
-        self.network = Network()
         self.neurons = {}
         self.ampl_input_neurons = {}
         self.dir_input_neurons = {}
@@ -63,8 +62,8 @@ class Brain:
 
         for (nid, value) in declarations:
             n = Neuron()
-            self.neurons[name] = n
-            t = neuron_type(n)
+            self.neurons[nid] = n
+            t = neuron_type(nid)
             if t == 1:
                 self.ampl_inputs[value] = n
             elif t == 2:

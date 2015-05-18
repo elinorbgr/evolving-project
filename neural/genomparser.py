@@ -12,9 +12,9 @@ def neuron_type(nid):
     t = nid[-1]
     if t in "abc":
         return 1 # amplitude input
-    elif t in "def"
+    elif t in "def":
         return 2 # direction input
-    elif t in "xyz"
+    elif t in "xyz":
         return 3 # output
     else:
         return 0 # internal
