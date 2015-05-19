@@ -2,9 +2,6 @@ import math
 
 from neural.genomparser import parse_genome, neuron_type
 
-def sigmoid(x):
-    return 1 / (1 + math.exp(-x))
-
 class Neuron:
     def __init__(self):
         self.value = 0.0
@@ -19,7 +16,7 @@ class Neuron:
         x = self.bias
         for (n, w) in self.inputs:
             x += w * n.value
-        self.value_buffer = sigmoid(x)
+        self.value_buffer = math.tanh(x)
 
     def sync(self):
         self.value = self.value_buffer
@@ -32,7 +29,7 @@ def find_best_match(nid, neurons):
         best_match = ""
         best_score = 0
         for n in neurons.keys():
-            if n.len() > best_score and n.len() < nid.len():
+            if len(n) > best_score and len(n) < len(nid):
                 if nid.endswith(n):
                     best_match = n
                     best_score = n.len()
@@ -65,11 +62,11 @@ class Brain:
             self.neurons[nid] = n
             t = neuron_type(nid)
             if t == 1:
-                self.ampl_inputs[value] = n
+                self.ampl_input_neurons[value] = n
             elif t == 2:
-                self.dir_inputs[value] = n
+                self.dir_input_neurons[value] = n
             elif t == 3:
-                self.outputs[value] = n
+                self.output_neurons[value] = n
             else:
                 if value % 2 == 0:
                     n.bias = float(value) / 1000
@@ -77,10 +74,10 @@ class Brain:
                     n.bias = -float(value) / 1000
 
         for (nid1, val1, nid2, val2) in links:
-            bid1 = best_match(nid1, self.neurons)
+            bid1 = find_best_match(nid1, self.neurons)
             if bid1 is None:
                 continue
-            bid2 = best_match(nid2, self.neurons)
+            bid2 = find_best_match(nid2, self.neurons)
             if bid2 is None:
                 continue
             w = float(val1 - val2) / 1000
@@ -89,14 +86,14 @@ class Brain:
     def compute(self, hard_inputs, inputs):
         for (k,v) in hard_inputs.items():
             self.neurons[k].value = v
-        for (k,(ampliture, direction)) in ampl_inputs.items():
+        for (k,(ampliture, direction)) in inputs.items():
             if k in self.ampl_inputs_neurons:
                 self.ampl_input_neurons[k].value = ampliture
             if k in self.dir_input_neurons:
                 self.dir_input_neurons[k].value = direction
-        for n in self.neurons:
+        for n in self.neurons.values():
             n.compute()
-        for n in self.neurons:
+        for n in self.neurons.values():
             n.sync()
         houtputs = {}
         for o in self.hard_outputs:
