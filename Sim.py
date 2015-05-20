@@ -1,4 +1,4 @@
-import pygame, random, sys
+import pygame, random, sys, math
 from pygame.locals import *
 
 
@@ -6,6 +6,10 @@ size = 600
 pygame.init()
 s=pygame.display.set_mode((size, size))
 s.fill((255,255,255))
+
+vel = 0.4
+angv = 0.1
+theta = 30
 
 nr = 5
 
@@ -18,9 +22,7 @@ for i in range(nr):
     xs[i] = random.randint(0,size)
     ys[i] = random.randint(0,size)
 
-print(dirs)
-print(xs)
-print(ys)
+
 clock = pygame.time.Clock()
 
 def turn(cur):
@@ -41,7 +43,7 @@ def turn(cur):
     
 
 while True:
-    clock.tick(10)
+    deltatime = clock.tick(10)
     s.fill((255, 255, 255))
     for e in pygame.event.get():
         if e.type == QUIT:
@@ -54,13 +56,11 @@ while True:
         if ys[i] > size:ys[i] = 0
 
         dirs[i] = turn(dirs[i])
-        
-        if dirs[i]==0:ys[i] += 20;
-        elif dirs[i]==1:xs[i] += 20
-        elif dirs[i]==2:ys[i] -= 20
-        elif dirs[i]==3:xs[i] -= 20
+        xs[i] += math.cos(theta)*vel*deltatime
+        ys[i] += math.sin(theta)*vel*deltatime
+        theta += angv*deltatime
 
-        
+ 
         s.blit(img, (xs[i], ys[i]))
 
         
