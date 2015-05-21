@@ -20,6 +20,10 @@ class Animal:
         self.x += math.cos(self.theta) * speed * deltatime * v_scale
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
         self.theta += angular_speed * deltatime * angv_scale
+        if self.theta > 2*math.pi:
+            self.theta -= 1*math.pi
+        elif self.theta < 0:
+            self.theta += 2*math.pi
         return outputs
 
     def teleport(self, x, y, theta):

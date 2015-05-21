@@ -88,10 +88,10 @@ class Brain:
         for (k,v) in hard_inputs.items():
             self.neurons[k].value = v
         for (k,(ampliture, direction)) in enumerate(inputs):
-            for (j,n) in self.ampl_inputs_neurons.iteritems():
+            for (j,n) in self.ampl_input_neurons.iteritems():
                 if j % self.pheromone_count == k:
                     n.value = ampliture
-            if (j,n) in self.dir_input_neurons.iteritems():
+            for (j,n) in self.dir_input_neurons.iteritems():
                 if j % self.pheromone_count == k:
                     n.value = direction
         for n in self.neurons.values():

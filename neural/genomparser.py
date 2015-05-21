@@ -49,7 +49,7 @@ def parse_genome(genome):
             if state == 1 or state == 2:
                 value_1 = 10 * value_1 + int(c)
             elif state == 3:
-                value_2 = 10 * value_1 + int(c)
+                value_2 = 10 * value_2 + int(c)
         elif c == '+':
             id_1 = ""
             value_1 = 0
