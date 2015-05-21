@@ -41,10 +41,12 @@ def main():
             if a.x < 0: a.x += size
             if a.y > size: a.y -= size
             if a.y < 0: a.y += size
+            # choose a color:
+            col = pygame.Color(int((100-a.energy)*255/100), int(a.energy*255/100), 0, 255)
             # draw a body
-            pygame.draw.circle(s, 0, (int(a.x), int(a.y)), 8)
+            pygame.draw.circle(s, col, (int(a.x), int(a.y)), 8)
             # draw a head
-            pygame.draw.circle(s, 0, (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5)
+            pygame.draw.circle(s, col, (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5)
 
         pygame.display.update()
 
