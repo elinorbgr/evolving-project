@@ -39,7 +39,8 @@ def find_best_match(nid, neurons):
             return None
 
 class Brain:
-    def __init__(self, genome, hard_inputs, hard_outputs):
+    def __init__(self, genome, hard_inputs, hard_outputs, pheromone_count):
+        self.pheromone_count = pheromone_count
         self.genome = genome
         (declarations, links) = parse_genome(genome)
         self.neurons = {}
@@ -86,11 +87,13 @@ class Brain:
     def compute(self, hard_inputs, inputs):
         for (k,v) in hard_inputs.items():
             self.neurons[k].value = v
-        for (k,(ampliture, direction)) in inputs.items():
-            if k in self.ampl_inputs_neurons:
-                self.ampl_input_neurons[k].value = ampliture
-            if k in self.dir_input_neurons:
-                self.dir_input_neurons[k].value = direction
+        for (k,(ampliture, direction)) in enumerate(inputs):
+            for (j,n) in self.ampl_inputs_neurons.iteritems():
+                if j % self.pheromone_count == k:
+                    n.value = ampliture
+            if (j,n) in self.dir_input_neurons.iteritems():
+                if j % self.pheromone_count == k:
+                    n.value = direction
         for n in self.neurons.values():
             n.compute()
         for n in self.neurons.values():
@@ -98,8 +101,8 @@ class Brain:
         houtputs = {}
         for o in self.hard_outputs:
             houtputs[o] = self.neurons[o].value
-        outputs = {}
+        outputs = [ 0.0 for _ in range(self.pheromone_count)]
         for (o, n) in self.output_neurons:
-            outputs[o] = n.value
+            outputs[o % self.pheromone_count] += n.value
         return (houtputs, outputs)
 

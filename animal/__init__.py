@@ -8,8 +8,8 @@ class Animal:
     x = 0
     y = 0
 
-    def __init__(self, genome):
-        self.brain = Brain(genome, ["Ea"], ["Mx", "My"])
+    def __init__(self, genome, pheromone_count):
+        self.brain = Brain(genome, ["Ea"], ["Mx", "My"], pheromone_count)
         self.energy = 50.0
 
     def update(self, inputs, deltatime, v_scale, angv_scale):
