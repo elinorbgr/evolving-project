@@ -27,3 +27,5 @@ class Simulator:
             if a.x < 0: a.x += self.width
             if a.y > self.height: a.y -= self.height
             if a.y < 0: a.y += self.height
+        # kill dead animals
+        self.animals = [ a for a in self.animals if a.energy > 0.0 ]
