@@ -102,7 +102,7 @@ class Brain:
         for o in self.hard_outputs:
             houtputs[o] = self.neurons[o].value
         outputs = [ 0.0 for _ in range(self.pheromone_count)]
-        for (o, n) in self.output_neurons:
+        for (o, n) in self.output_neurons.iteritems():
             outputs[o % self.pheromone_count] += n.value
         return (houtputs, outputs)
 

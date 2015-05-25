@@ -5,6 +5,11 @@ from pygame.locals import *
 
 from simulator import Simulator
 
+PHEROMONES_COLORS = [
+    (0,0,255),
+    (255,0,0)
+]
+
 def main():
     # init phase
     (width, heigth) = (800, 600)
@@ -15,7 +20,7 @@ def main():
     s.fill((255,255,255))
 
     # genomes = ["+5A00i-1A000iMx", "+5A00i-1A000iMx-5A00iMy", "+5A00i-1A000iMx-Ai5M00y"]
-    genomes = ["+5A00i-1A000iMx+Fd-10F00dMy"]
+    genomes = ["+5A00i-1A000iMx+Fd-10F00dMy+P1z-20A00iPz"]
 
     sim = Simulator(width, heigth, 30, genomes)
 
@@ -30,8 +35,9 @@ def main():
 
         # display the pheromones
         for p in sim.pheromones:
-            i = 1.0 - min(p.power(), 1.0)
-            col = (int(255*i),int(255*i),255, 255)
+            i = min(p.power(), 1.0)
+            (r,g,b) = PHEROMONES_COLORS[p.sid]
+            col = (int(255*(1.0-i) + r*i),int(255*(1.0-i) + g*i),int(255*(1.0-i) + b*i), 255)
             pygame.draw.circle(s, col, (int(p.x), int(p.y)), int(p.radius), 1)
 
         # display the food

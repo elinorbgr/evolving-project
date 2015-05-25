@@ -3,7 +3,7 @@ import math, random
 from animal import Animal
 from environment import Food
 
-PHEROMONES = 1
+PHEROMONES = 2
 
 ANIMALS_BASE_SPEED = 50
 ANIMALS_BASE_ANGULAR_SPEED = 5
@@ -66,7 +66,7 @@ class Simulator:
                 math.tanh(math.tan((math.atan2(gy, gx) - a.theta)/2)) for (gy, gx) in zip(grady, gradx)
             ]
             # update animals
-            a.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED)
+            a.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED, self.pheromones)
             if a.x > self.width: a.x -= self.width
             if a.x < 0: a.x += self.width
             if a.y > self.height: a.y -= self.height

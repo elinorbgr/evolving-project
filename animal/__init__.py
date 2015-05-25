@@ -2,17 +2,20 @@ import math
 
 from neural.brain import Brain
 
+from environment.pheromone import Pheromone
+
 class Animal:
 
     theta = 0
     x = 0
     y = 0
+    p_cooldown = 0.0
 
     def __init__(self, genome, pheromone_count):
         self.brain = Brain(genome, ["Ea"], ["Mx", "My"], pheromone_count)
         self.energy = 50.0
 
-    def update(self, inputs, deltatime, v_scale, angv_scale):
+    def update(self, inputs, deltatime, v_scale, angv_scale, pheromones):
         (hard_out, outputs) = self.brain.compute({ "Ea": self.energy }, inputs)
         speed = hard_out["Mx"]
         angular_speed = hard_out["My"]
@@ -24,7 +27,14 @@ class Animal:
             self.theta -= 1*math.pi
         elif self.theta < 0:
             self.theta += 2*math.pi
-        return outputs
+        # pheromones
+        if self.p_cooldown <= 0:
+            for (i,v)in enumerate(outputs):
+                if v > 0.5:
+                    pheromones.append(Pheromone(i, self.x, self.y, v*10, 10))
+            self.p_cooldown = 1.0
+        else:
+            self.p_cooldown -= deltatime
 
     def teleport(self, x, y, theta):
         self.x = x
