@@ -29,6 +29,7 @@ class Simulator:
             )
         self.food_frequency = 1.0
         self.next_food = 1.0
+        self.pheromones = []
 
     def update(self, timestep):
         self.next_food -= timestep
@@ -42,8 +43,10 @@ class Simulator:
 
         for a in self.animals:
             # compute food smells
-            (val, gradx, grady) = (0.0, 0.0, 0.0)
-            for f in self.foods:
+            val = [0.0 for _ in range(PHEROMONES)]
+            gradx = [0.0 for _ in range(PHEROMONES)]
+            grady = [0.0 for _ in range(PHEROMONES)]
+            for f in self.pheromones:
                 x = a.x
                 y = a.y
                 # take the warping into account
@@ -55,22 +58,29 @@ class Simulator:
                     y -= self.height
                 elif y - f.y < -self.height / 2:
                     y += self.height
-                (fval, fgx, fgy) = f.smell_at(x, y)
-                val += fval
-                gradx += fgx
-                grady += fgy
-            angle_val = math.tanh(math.tan((math.atan2(grady, gradx) - a.theta)/2))
+                (fval, fgx, fgy) = f.values_at(x, y)
+                val[f.sid] += fval
+                gradx[f.sid] += fgx
+                grady[f.sid] += fgy
+            angle_val = [
+                math.tanh(math.tan((math.atan2(gy, gx) - a.theta)/2)) for (gy, gx) in zip(grady, gradx)
+            ]
             # update animals
-            a.update([(val, angle_val)], timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED)
+            a.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED)
             if a.x > self.width: a.x -= self.width
             if a.x < 0: a.x += self.width
             if a.y > self.height: a.y -= self.height
             if a.y < 0: a.y += self.height
 
         for f in self.foods:
-            f.update(self.animals)
+            f.update(self.animals, self.pheromones, timestep)
+
+        for f in self.pheromones:
+            f.tick(timestep)
 
         # kill dead animals
         self.animals = [ a for a in self.animals if a.energy > 0.0 ]
         # remove finished foods
         self.foods = [ f for f in self.foods if f.amount > 0.0 ]
+        # remove vanished pheromones
+        self.pheromones = [ f for f in self.pheromones if f.power() > 0.1 ]

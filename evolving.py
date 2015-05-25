@@ -28,6 +28,12 @@ def main():
 
         sim.update(deltatime)
 
+        # display the pheromones
+        for p in sim.pheromones:
+            i = 1.0 - min(p.power(), 1.0)
+            col = (int(255*i),int(255*i),255, 255)
+            pygame.draw.circle(s, col, (int(p.x), int(p.y)), int(p.radius), 1)
+
         # display the food
         fcol = pygame.Color(0,0,255)
         for f in sim.foods:

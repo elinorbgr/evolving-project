@@ -1,5 +1,7 @@
 import math
 
+from .pheromone import Pheromone
+
 def distance(x, y, a, b):
     return math.sqrt((x-a)**2 + (y-b)**2)
 
@@ -8,8 +10,9 @@ class Food:
         self.x = x
         self.y = y
         self.amount = amount
+        self.tick = 1.0
 
-    def update(self, animals):
+    def update(self, animals, pheromones, timedelta):
         for a in animals:
             if distance(a.x, a.y, self.x, self.y) < 8:
                 consume = min(self.amount, 100 - a.energy)
@@ -17,9 +20,7 @@ class Food:
                 a.energy += consume
                 if self.amount <= 0:
                     break
-
-    def smell_at(self, x, y):
-        val = 1 / distance(self.x, self.y, x, y)
-        gradx = -2 * (x - self.x) * (val**2)
-        grady = -2 * (y - self.y) * (val**2)
-        return (val, gradx, grady)
+        self.tick -= timedelta
+        if self.amount > 0 and self.tick <= 0:
+            self.tick = 1.0
+            pheromones.append(Pheromone(0, self.x, self.y, self.amount, 10))
