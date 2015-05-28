@@ -32,7 +32,7 @@ def find_best_match(nid, neurons):
             if len(n) > best_score and len(n) < len(nid):
                 if nid.endswith(n):
                     best_match = n
-                    best_score = n.len()
+                    best_score = len(n)
         if best_score > 0:
             return best_match
         else:
@@ -88,10 +88,10 @@ class Brain:
         for (k,v) in hard_inputs.items():
             self.neurons[k].value = v
         for (k,(ampliture, direction)) in enumerate(inputs):
-            for (j,n) in self.ampl_input_neurons.iteritems():
+            for (j,n) in self.ampl_input_neurons.items():
                 if j % self.pheromone_count == k:
                     n.value = ampliture
-            for (j,n) in self.dir_input_neurons.iteritems():
+            for (j,n) in self.dir_input_neurons.items():
                 if j % self.pheromone_count == k:
                     n.value = direction
         for n in self.neurons.values():
@@ -102,7 +102,7 @@ class Brain:
         for o in self.hard_outputs:
             houtputs[o] = self.neurons[o].value
         outputs = [ 0.0 for _ in range(self.pheromone_count)]
-        for (o, n) in self.output_neurons.iteritems():
+        for (o, n) in self.output_neurons.items():
             outputs[o % self.pheromone_count] += n.value
         return (houtputs, outputs)
 

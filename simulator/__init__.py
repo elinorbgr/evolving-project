@@ -35,11 +35,12 @@ class Simulator:
         self.next_food -= timestep
         if self.next_food <= 0.0:
             self.next_food = self.food_frequency
-            self.foods.append(Food(
-                random.randrange(0, self.width, 1),
-                random.randrange(0, self.height, 1),
-                10
-            ))
+            if len(self.foods) < len(self.animals):
+                self.foods.append(Food(
+                    random.randrange(0, self.width, 1),
+                    random.randrange(0, self.height, 1),
+                    10
+                ))
 
         for a in self.animals:
             # compute food smells

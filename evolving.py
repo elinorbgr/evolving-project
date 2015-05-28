@@ -1,8 +1,9 @@
-#!/bin/env python2
+#!/bin/env python3
 
 import pygame, random, sys, math
 from pygame.locals import *
 
+from neural import random_genome
 from simulator import Simulator
 
 PHEROMONES_COLORS = [
@@ -26,6 +27,7 @@ def main():
 
     while True:
         deltatime = float(clock.tick(50)) / 1000
+        deltatime = 0.02
         s.fill((255, 255, 255))
         for e in pygame.event.get():
             if e.type == QUIT:
