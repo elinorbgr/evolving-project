@@ -1,7 +1,7 @@
 # Genom parsing
 
 import string
-from neural import BASE
+from neural import BASE, INPUT_AMPL_SUFFIX, INPUT_DIR_SUFFIX, OUTPUT_SUFFIX
 
 class InvalidGenomeError:
     def __init__(self, char):
@@ -11,11 +11,11 @@ class InvalidGenomeError:
 
 def neuron_type(nid):
     t = nid[-1]
-    if t in "abc":
+    if t in INPUT_AMPL_SUFFIX:
         return 1 # amplitude input
-    elif t in "def":
+    elif t in INPUT_DIR_SUFFIX:
         return 2 # direction input
-    elif t in "xyz":
+    elif t in OUTPUT_SUFFIX:
         return 3 # output
     else:
         return 0 # internal

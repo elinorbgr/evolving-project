@@ -4,6 +4,10 @@ from neural.brain import Brain
 
 from environment.pheromone import Pheromone
 
+ENERGY_NEURON = "La"
+SPEED_NEURON = "Mx"
+ANGSPEED_NEURON = "Nx"
+
 class Animal:
 
     theta = 0
@@ -12,13 +16,13 @@ class Animal:
     p_cooldown = 0.0
 
     def __init__(self, genome, pheromone_count):
-        self.brain = Brain(genome, ["Aa"], ["Mx", "Nx"], pheromone_count)
+        self.brain = Brain(genome, [ENERGY_NEURON], [SPEED_NEURON, ANGSPEED_NEURON], pheromone_count)
         self.energy = 50.0
 
     def update(self, inputs, deltatime, v_scale, angv_scale, pheromones):
-        (hard_out, outputs) = self.brain.compute({ "Aa": self.energy }, inputs)
-        speed = hard_out["Mx"]
-        angular_speed = hard_out["Nx"]
+        (hard_out, outputs) = self.brain.compute({ ENERGY_NEURON: self.energy }, inputs)
+        speed = hard_out[SPEED_NEURON]
+        angular_speed = hard_out[ANGSPEED_NEURON]
         self.energy -= 0.01 + 0.1 * speed * deltatime
         self.x += math.cos(self.theta) * speed * deltatime * v_scale
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
