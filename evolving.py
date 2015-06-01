@@ -20,8 +20,7 @@ def main():
     clock = pygame.time.Clock()
     s.fill((255,255,255))
 
-    # genomes = ["+5A00i-1A000iMx", "+5A00i-1A000iMx-5A00iMy", "+5A00i-1A000iMx-Ai5M00y"]
-    genomes = ["+5A00i-1A000iMx+Fd-10F00dMy+P1z-20A00iPz"]
+    genomes = ["+133M10l-33M220lMx+Ld-33L220dNx"]
 
     sim = Simulator(width, heigth, 30, genomes)
 

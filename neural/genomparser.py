@@ -1,6 +1,7 @@
 # Genom parsing
 
 import string
+from neural import BASE
 
 class InvalidGenomeError:
     def __init__(self, char):
@@ -47,9 +48,9 @@ def parse_genome(genome):
                 id_2 += c
         elif c.isdigit():
             if state == 1 or state == 2:
-                value_1 = 10 * value_1 + int(c)
+                value_1 = BASE * value_1 + int(c)
             elif state == 3:
-                value_2 = 10 * value_2 + int(c)
+                value_2 = BASE * value_2 + int(c)
         elif c == '+':
             id_1 = ""
             value_1 = 0

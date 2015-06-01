@@ -12,13 +12,13 @@ class Animal:
     p_cooldown = 0.0
 
     def __init__(self, genome, pheromone_count):
-        self.brain = Brain(genome, ["Ea"], ["Mx", "My"], pheromone_count)
+        self.brain = Brain(genome, ["Aa"], ["Mx", "Nx"], pheromone_count)
         self.energy = 50.0
 
     def update(self, inputs, deltatime, v_scale, angv_scale, pheromones):
-        (hard_out, outputs) = self.brain.compute({ "Ea": self.energy }, inputs)
+        (hard_out, outputs) = self.brain.compute({ "Aa": self.energy }, inputs)
         speed = hard_out["Mx"]
-        angular_speed = hard_out["My"]
+        angular_speed = hard_out["Nx"]
         self.energy -= 0.01 + 0.1 * speed * deltatime
         self.x += math.cos(self.theta) * speed * deltatime * v_scale
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
