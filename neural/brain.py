@@ -2,8 +2,11 @@ import math
 
 from neural.genomparser import parse_genome, neuron_type
 
+from neural import BASE
+
 class Neuron:
-    def __init__(self):
+    def __init__(self, nid):
+        self.nid = nid
         self.value = 0.0
         self.value_buffer = 0.0
         self.bias = 0.0
@@ -51,15 +54,15 @@ class Brain:
         self.hard_outputs = hard_outputs
 
         for name in hard_inputs:
-            n = Neuron()
+            n = Neuron(name)
             self.neurons[name] = n
 
         for name in hard_outputs:
-            n = Neuron()
+            n = Neuron(name)
             self.neurons[name] = n
 
         for (nid, value) in declarations:
-            n = Neuron()
+            n = Neuron(nid)
             self.neurons[nid] = n
             t = neuron_type(nid)
             if t == 1:
@@ -70,9 +73,9 @@ class Brain:
                 self.output_neurons[value] = n
             else:
                 if value % 2 == 0:
-                    n.bias = float(value) / 1000
+                    n.bias = float(value) / (BASE**3)
                 else:
-                    n.bias = -float(value) / 1000
+                    n.bias = -float(value) / (BASE**3)
 
         for (nid1, val1, nid2, val2) in links:
             bid1 = find_best_match(nid1, self.neurons)
@@ -81,7 +84,10 @@ class Brain:
             bid2 = find_best_match(nid2, self.neurons)
             if bid2 is None:
                 continue
-            w = float(val1 - val2) / 1000
+            val = val1 - val2
+            if val == 0:
+                continue
+            w = float(val) / 1000
             self.neurons[bid2].connect(self.neurons[bid1], w)
 
     def compute(self, hard_inputs, inputs):
