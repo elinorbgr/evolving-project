@@ -2,10 +2,13 @@
 
 import random
 
+from neural import ALPHABET
+
+from conf import REBREEDING_CHANCE, MUTATION_RATE
 
 def breed_cs(genA,genB):
-    aCut = random.randint(0,len(genA))
-    bCut = random.randint(0,len(genB))
+    aCut = int(random.randint(0,int(len(genA)/2)) + len(genA)/4)
+    bCut = int(random.randint(0,int(len(genB)/2)) + len(genB)/4)
     childA = []
     childB = []
     for i in range(0,aCut):
@@ -67,18 +70,25 @@ def breed_2px(genA,genB):
     return [''.join(childA),''.join(childB)]
 
 def mutate(gen):
-    ind = []
-    for i in range(2):
-        ind.append(random.randint(0,len(gen)-1))
-
-    gen = list(gen)
-    gen[ind[0]],gen[ind[1]] = gen[ind[1]], gen[ind[0]]
+    ngen = []
+    for c in gen:
+        if random.uniform(0,1) <= MUTATION_RATE:
+            # mutate
+            # 0.5 chances mutation
+            # 0.25 chances addition/deletion
+            if random.randint(1,2) == 1:
+                ngen.append(random.choice(ALPHABET))
+            elif random.randint(1,2) == 1:
+                ngen.append(c)
+                ngen.append(random.choice(ALPHABET))
+        else:
+            ngen.append(c)
     
-    return ''.join(gen)
+    return ''.join(ngen)
 
 def breed(genA, genB):
     (genA, genB) = breed_cs(genA, genB)
-    while random.randint(1,4) == 1:
+    while random.uniform(0,1) <= REBREEDING_CHANCE:
         (genA, genB) = breed_cs(genA, genB)
     if random.randint(1,2) == 1:
         return mutate(genA)

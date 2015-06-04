@@ -5,20 +5,8 @@ from environment import Food
 
 from neural.breeding import breed
 
-PHEROMONES = 2
-
-ANIMALS_BASE_SPEED = 50
-ANIMALS_BASE_ANGULAR_SPEED = 5
-
-FOOD_PERIOD = 1.0
-BREEDING_PERIOD = 10.0
-BREEDING_FITNESS = 0.5
-
-pheromones_proxy = None
-
-def initWorker(proxy):
-    global pheromones_proxy
-    pheromones_proxy = proxy
+from conf import PHEROMONES, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED
+from conf import FOOD_PERIOD, BREEDING_PERIOD, BREEDING_FITNESS
 
 def update_animal(animal, pheromones, timestep, width, height):
     # compute food smells
@@ -82,12 +70,11 @@ class Simulator:
         self.next_food -= timestep
         if self.next_food <= 0.0:
             self.next_food = random.expovariate(1.0/FOOD_PERIOD)
-            if len(self.foods) < len(self.animals):
-                self.foods.append(Food(
-                    random.randrange(0, self.width, 1),
-                    random.randrange(0, self.height, 1),
-                    10
-                ))
+            self.foods.append(Food(
+                random.randrange(0, self.width, 1),
+                random.randrange(0, self.height, 1),
+                10
+            ))
 
         self.next_breed -= timestep
         if self.next_breed <= 0.0:

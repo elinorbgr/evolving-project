@@ -4,6 +4,8 @@ from neural.brain import Brain
 
 from environment.pheromone import Pheromone
 
+from conf import LIFE_COST, MOVE_COST
+
 ENERGY_NEURON = "La"
 SPEED_NEURON = "Mx"
 ANGSPEED_NEURON = "Nx"
@@ -23,7 +25,7 @@ class Animal:
         (hard_out, outputs) = self.brain.compute({ ENERGY_NEURON: self.energy }, inputs)
         speed = hard_out[SPEED_NEURON]
         angular_speed = hard_out[ANGSPEED_NEURON]
-        self.energy -= 0.01 + 0.1 * speed * deltatime
+        self.energy -= LIFE_COST + MOVE_COST * speed * deltatime
         self.x += math.cos(self.theta) * speed * deltatime * v_scale
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
         self.theta += angular_speed * deltatime * angv_scale

@@ -6,17 +6,20 @@ from pygame.locals import *
 from neural import random_genome
 from simulator import Simulator
 
+from conf import WIDTH, HEIGHT, ANIMAL_COUNT
+
 PHEROMONES_COLORS = [
     (0,0,255),
-    (255,0,0)
+    (255,0,0),
+    (0,255,0),
+    (0,0,0)
 ]
 
 def main():
     # init phase
-    (width, heigth) = (800, 600)
 
     pygame.init()
-    s = pygame.display.set_mode((width, heigth))
+    s = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     s.fill((255,255,255))
 
@@ -24,7 +27,7 @@ def main():
 
     genomes = [ random_genome(5000) for _ in range(100) ]
 
-    sim = Simulator(width, heigth, 30, genomes)
+    sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
 
     while True:
         deltatime = float(clock.tick(50)) / 1000
