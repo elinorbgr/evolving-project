@@ -3,10 +3,16 @@ from multiprocessing import Pool, Manager
 from animal import Animal
 from environment import Food
 
+from neural.breeding import breed
+
 PHEROMONES = 2
 
 ANIMALS_BASE_SPEED = 50
 ANIMALS_BASE_ANGULAR_SPEED = 5
+
+FOOD_PERIOD = 1.0
+BREEDING_PERIOD = 10.0
+BREEDING_FITNESS = 0.5
 
 pheromones_proxy = None
 
@@ -68,20 +74,48 @@ class Simulator:
                 random.randrange(0, self.height, 1),
                 random.uniform(0, 6.28)
             )
-        self.food_frequency = 1.0
-        self.next_food = 1.0
+        self.next_food = random.expovariate(1.0/FOOD_PERIOD)
         self.pheromones = self.manager.list([])
+        self.next_breed = random.expovariate(1.0/BREEDING_PERIOD)
 
     def update(self, timestep):
         self.next_food -= timestep
         if self.next_food <= 0.0:
-            self.next_food = self.food_frequency
+            self.next_food = random.expovariate(1.0/FOOD_PERIOD)
             if len(self.foods) < len(self.animals):
                 self.foods.append(Food(
                     random.randrange(0, self.width, 1),
                     random.randrange(0, self.height, 1),
                     10
                 ))
+
+        self.next_breed -= timestep
+        if self.next_breed <= 0.0:
+            self.next_breed = random.expovariate(1.0/BREEDING_PERIOD)
+            self.animals.sort(key=lambda a: a.energy, reverse=True)
+            # choose parents
+            parentA = 0
+            while random.uniform(0,1) >= BREEDING_FITNESS:
+                parentA += 1
+            if parentA >= len(self.animals):
+                parentA = len(self.animals) - 1
+            parentB = 0
+            while random.uniform(0,1) >= BREEDING_FITNESS:
+                parentB += 1
+            if parentB >= len(self.animals):
+                parentB = len(self.animals) - 1
+            # breed
+            new_genome = breed(
+                self.animals[parentA].brain.genome,
+                self.animals[parentB].brain.genome
+            )
+            child = Animal(new_genome, PHEROMONES)
+            child.teleport(
+                random.randrange(0, self.width, 1),
+                random.randrange(0, self.height, 1),
+                random.uniform(0, 6.28)
+            )
+            self.animals.append(child)
 
         self.animals = [ a for a in self.pool.starmap(update_animal,
             [(a, self.pheromones, timestep, self.width, self.height) for a in self.animals]

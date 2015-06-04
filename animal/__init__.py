@@ -28,7 +28,7 @@ class Animal:
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
         self.theta += angular_speed * deltatime * angv_scale
         if self.theta > 2*math.pi:
-            self.theta -= 1*math.pi
+            self.theta -= 2*math.pi
         elif self.theta < 0:
             self.theta += 2*math.pi
         # pheromones

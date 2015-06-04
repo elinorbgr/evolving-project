@@ -75,6 +75,12 @@ def mutate(gen):
     gen[ind[0]],gen[ind[1]] = gen[ind[1]], gen[ind[0]]
     
     return ''.join(gen)
-    
-    
-    
+
+def breed(genA, genB):
+    (genA, genB) = breed_cs(genA, genB)
+    while random.randint(1,4) == 1:
+        (genA, genB) = breed_cs(genA, genB)
+    if random.randint(1,2) == 1:
+        return mutate(genA)
+    else:
+        return mutate(genB)
