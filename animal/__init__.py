@@ -4,7 +4,7 @@ from neural.brain import Brain
 
 from environment.pheromone import Pheromone
 
-from conf import LIFE_COST, MOVE_COST
+from conf import LIFE_COST, MOVE_COST, INITIAL_ENERGY
 
 ENERGY_NEURON = "La"
 SPEED_NEURON = "Mx"
@@ -19,7 +19,7 @@ class Animal:
 
     def __init__(self, genome, pheromone_count):
         self.brain = Brain(genome, [ENERGY_NEURON], [SPEED_NEURON, ANGSPEED_NEURON], pheromone_count)
-        self.energy = 50.0
+        self.energy = INITIAL_ENERGY
 
     def update(self, inputs, deltatime, v_scale, angv_scale, pheromones):
         (hard_out, outputs) = self.brain.compute({ ENERGY_NEURON: self.energy }, inputs)
