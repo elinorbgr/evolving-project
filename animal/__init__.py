@@ -25,7 +25,7 @@ class Animal:
         (hard_out, outputs) = self.brain.compute({ ENERGY_NEURON: self.energy }, inputs)
         speed = hard_out[SPEED_NEURON]
         angular_speed = hard_out[ANGSPEED_NEURON]
-        self.energy -= LIFE_COST + MOVE_COST * speed * deltatime
+        self.energy -= (LIFE_COST + MOVE_COST * speed) * deltatime
         self.x += math.cos(self.theta) * speed * deltatime * v_scale
         self.y += math.sin(self.theta) * speed * deltatime * v_scale
         self.theta += angular_speed * deltatime * angv_scale

@@ -6,7 +6,7 @@ from pygame.locals import *
 from neural import random_genome
 from simulator import Simulator
 
-from conf import WIDTH, HEIGHT, ANIMAL_COUNT
+from conf import WIDTH, HEIGHT, ANIMAL_COUNT, TIME_TICK
 
 PHEROMONES_COLORS = [
     (0,0,255),
@@ -31,7 +31,7 @@ def main():
 
     while True:
         deltatime = float(clock.tick(50)) / 1000
-        deltatime = 0.02
+        deltatime = TIME_TICK
         s.fill((255, 255, 255))
         for e in pygame.event.get():
             if e.type == QUIT:
