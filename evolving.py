@@ -50,15 +50,18 @@ def main():
         fcol = pygame.Color(0,0,255)
         for f in sim.foods:
             pygame.draw.circle(s, fcol, (f.x, f.y), 5)
+            pygame.draw.circle(s, (0,0,0), (f.x, f.y), 5, 1)
 
         # display the animals
         for a in sim.animals:
             # choose a color:
             col = pygame.Color(int((100-a.energy)*255/100), int(a.energy*255/100), 0, 255)
-            # draw a body
-            pygame.draw.circle(s, col, (int(a.x), int(a.y)), 8)
             # draw a head
             pygame.draw.circle(s, col, (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5)
+            pygame.draw.circle(s, (0,0,0), (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5, 1)
+            # draw a body
+            pygame.draw.circle(s, col, (int(a.x), int(a.y)), 8)
+            pygame.draw.circle(s, (0,0,0), (int(a.x), int(a.y)), 8, 1)
 
         pygame.display.update()
 
