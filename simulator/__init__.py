@@ -34,12 +34,11 @@ def update_animal(animal, pheromones, timestep, width, height):
     ]
     # update animals
     new_pheromones = animal.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED)
-    pheromones.extend(new_pheromones)
     if animal.x > width: animal.x -= width
     if animal.x < 0: animal.x += width
     if animal.y > height: animal.y -= height
     if animal.y < 0: animal.y += height
-    return animal
+    return (animal, new_pheromones)
 
 class Simulator:
     def __init__(self, space_width, space_height, animal_count, genomes):
@@ -109,9 +108,12 @@ class Simulator:
             )
             self.animals.append(child)
 
-        self.animals = [ a for a in self.pool.starmap(update_animal,
+        result = list(zip(*(a for a in self.pool.starmap(update_animal,
             ((a, self.pheromones, timestep, self.width, self.height) for a in self.animals)
-        ) if a.energy > 0.0 ]
+        ))))
+        self.animals = [ a for a in result[0] if a.energy > 0 ]
+        for fl in result[1]:
+            self.pheromones.extend(fl)
 
         for f in self.foods:
             f.update(self.animals, self.pheromones, timestep)
