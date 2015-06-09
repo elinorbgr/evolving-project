@@ -7,6 +7,7 @@ from neural import random_genome
 from simulator import Simulator
 
 from conf import WIDTH, HEIGHT, ANIMAL_COUNT, TIME_TICK
+from conf import INIT_GENOME_LEN, INIT_GENOME_POOL
 
 PHEROMONES_COLORS = [
     (0,0,255),
@@ -25,7 +26,7 @@ def main():
 
     #genomes = ["+133M10l-33M220lMx+Ld-33L220dNx"]
 
-    genomes = [ random_genome(5000) for _ in range(100) ]
+    genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
 
     sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
 

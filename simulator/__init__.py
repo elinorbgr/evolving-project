@@ -105,7 +105,7 @@ class Simulator:
             self.animals.append(child)
 
         self.animals = [ a for a in self.pool.starmap(update_animal,
-            [(a, self.pheromones, timestep, self.width, self.height) for a in self.animals]
+            ((a, self.pheromones, timestep, self.width, self.height) for a in self.animals)
         ) if a.energy > 0.0 ]
 
         for f in self.foods:
