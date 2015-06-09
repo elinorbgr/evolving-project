@@ -47,10 +47,9 @@ def main():
             col = (int(255*(1.0-i) + r*i),int(255*(1.0-i) + g*i),int(255*(1.0-i) + b*i), 255)
             pygame.draw.circle(s, col, (int(p.x), int(p.y)), int(p.radius), 1)
 
-        # display the food
-        fcol = pygame.Color(0,0,255)
-        for f in sim.foods:
-            pygame.draw.circle(s, fcol, (f.x, f.y), 5)
+        # display the objects
+        for f in sim.objects:
+            pygame.draw.circle(s, PHEROMONES_COLORS[f.kind], (f.x, f.y), 5)
             pygame.draw.circle(s, (0,0,0), (f.x, f.y), 5, 1)
 
         # display the animals

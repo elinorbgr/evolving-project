@@ -1,12 +1,12 @@
 import math, random
 from multiprocessing import Pool, Manager
 from animal import Animal
-from environment import Food
+from environment import Food, Poison
 
 from neural.breeding import breed
 
 from conf import PHEROMONES, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED
-from conf import FOOD_PERIOD, BREEDING_PERIOD, BREEDING_FITNESS
+from conf import FOOD_PERIOD, BREEDING_PERIOD, BREEDING_FITNESS, POISON_PERIOD
 
 def update_animal(animal, pheromones, timestep, width, height):
     # compute food smells
@@ -49,7 +49,7 @@ class Simulator:
         self.height = space_height
         self.genomes = genomes
         self.animals = [ Animal(random.choice(genomes), PHEROMONES) for _ in range(animal_count) ]
-        self.foods = [
+        self.objects = [
             Food(
                 random.randrange(0, self.width, 1),
                 random.randrange(0, self.height, 1),
@@ -63,6 +63,7 @@ class Simulator:
                 random.uniform(0, 6.28)
             )
         self.next_food = random.expovariate(1.0/FOOD_PERIOD)
+        self.next_poison = random.expovariate(1.0/POISON_PERIOD)
         self.pheromones = self.manager.list([])
         self.next_breed = random.expovariate(1.0/BREEDING_PERIOD)
         self.new_genomes = []
@@ -71,7 +72,16 @@ class Simulator:
         self.next_food -= timestep
         if self.next_food <= 0.0:
             self.next_food = random.expovariate(1.0/FOOD_PERIOD)
-            self.foods.append(Food(
+            self.objects.append(Food(
+                random.randrange(0, self.width, 1),
+                random.randrange(0, self.height, 1),
+                10
+            ))
+
+        self.next_poison -= timestep
+        if self.next_poison <= 0.0:
+            self.next_poison = random.expovariate(1.0/POISON_PERIOD)
+            self.objects.append(Poison(
                 random.randrange(0, self.width, 1),
                 random.randrange(0, self.height, 1),
                 10
@@ -115,13 +125,13 @@ class Simulator:
         for fl in result[1]:
             self.pheromones.extend(fl)
 
-        for f in self.foods:
+        for f in self.objects:
             f.update(self.animals, self.pheromones, timestep)
 
         for f in self.pheromones:
             f.tick(timestep)
 
         # remove finished foods
-        self.foods = [ f for f in self.foods if f.amount > 0.0 ]
+        self.objects = [ f for f in self.objects if f.amount > 0.0 ]
         # remove vanished pheromones
         self.pheromones = [ f for f in self.pheromones if f.power() > 0.1 ]
