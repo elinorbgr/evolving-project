@@ -65,6 +65,7 @@ class Simulator:
         self.next_food = random.expovariate(1.0/FOOD_PERIOD)
         self.pheromones = self.manager.list([])
         self.next_breed = random.expovariate(1.0/BREEDING_PERIOD)
+        self.new_genomes = []
 
     def update(self, timestep):
         self.next_food -= timestep
@@ -92,11 +93,14 @@ class Simulator:
             if parentB >= len(self.animals):
                 parentB = len(self.animals) - 1
             # breed
-            new_genome = breed(
-                self.animals[parentA].brain.genome,
-                self.animals[parentB].brain.genome
-            )
-            child = Animal(new_genome, PHEROMONES)
+            self.new_genomes.append(self.pool.apply_async(
+                breed,
+                (self.animals[parentA].brain.genome, self.animals[parentB].brain.genome)
+            ))
+
+        if len(self.new_genomes) > 0 and self.new_genomes[0].ready():
+            new_genome = self.new_genomes.pop(0)
+            child = Animal(new_genome.get(), PHEROMONES)
             child.teleport(
                 random.randrange(0, self.width, 1),
                 random.randrange(0, self.height, 1),

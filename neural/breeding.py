@@ -49,7 +49,7 @@ def breed_aligned(genA, genB):
     return (genA[:k] + genB[k-offset:], genB[:k-offset] +genA[k:])
 
 def breed(genA, genB):
-    (genA, genB) = breed_cs(genA, genB)
+    (genA, genB) = breed_aligned(genA, genB)
     while random.uniform(0,1) <= REBREEDING_CHANCE:
         (genA, genB) = breed_aligned(genA, genB)
     if random.randint(1,2) == 1:
