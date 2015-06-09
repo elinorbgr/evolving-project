@@ -21,7 +21,7 @@ class Animal:
         self.brain = Brain(genome, [ENERGY_NEURON], [SPEED_NEURON, ANGSPEED_NEURON], pheromone_count)
         self.energy = INITIAL_ENERGY
 
-    def update(self, inputs, deltatime, v_scale, angv_scale, pheromones):
+    def update(self, inputs, deltatime, v_scale, angv_scale):
         (hard_out, outputs) = self.brain.compute({ ENERGY_NEURON: self.energy }, inputs)
         speed = hard_out[SPEED_NEURON]
         angular_speed = hard_out[ANGSPEED_NEURON]
@@ -34,13 +34,15 @@ class Animal:
         elif self.theta < 0:
             self.theta += 2*math.pi
         # pheromones
+        new_pheromones = []
         if self.p_cooldown <= 0:
             for (i,v)in enumerate(outputs):
-                if v > 0.5:
-                    pheromones.append(Pheromone(i, self.x, self.y, v*10, 10))
+                if v > 0:
+                    new_pheromones.append(Pheromone(i, self.x, self.y, v*10, 10))
             self.p_cooldown = 1.0
         else:
             self.p_cooldown -= deltatime
+        return new_pheromones
 
     def teleport(self, x, y, theta):
         self.x = x

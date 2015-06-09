@@ -33,7 +33,8 @@ def update_animal(animal, pheromones, timestep, width, height):
         math.tanh(math.tan((math.atan2(gy, gx) - animal.theta)/2)) for (gy, gx) in zip(grady, gradx)
     ]
     # update animals
-    animal.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED, pheromones)
+    new_pheromones = animal.update(zip(val, angle_val), timestep, ANIMALS_BASE_SPEED, ANIMALS_BASE_ANGULAR_SPEED)
+    pheromones.extend(new_pheromones)
     if animal.x > width: animal.x -= width
     if animal.x < 0: animal.x += width
     if animal.y > height: animal.y -= height
