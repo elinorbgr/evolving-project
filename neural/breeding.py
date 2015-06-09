@@ -6,69 +6,6 @@ from neural import ALPHABET
 
 from conf import REBREEDING_CHANCE, MUTATION_RATE
 
-def breed_cs(genA,genB):
-    aCut = int(random.randint(0,int(len(genA)/2)) + len(genA)/4)
-    bCut = int(random.randint(0,int(len(genB)/2)) + len(genB)/4)
-    childA = []
-    childB = []
-    for i in range(0,aCut):
-        childA.append(genA[i])
-    for i in range(0,bCut):
-        childB.append(genB[i])
-    for i in range(bCut,len(genB)):
-        childA.append(genB[i])
-    for i in range(aCut,len(genA)):
-        childB.append(genA[i])
-    
-    return [''.join(childA),''.join(childB)]
-
-
-
-def breed_uni(genA,genB):
-    childA = []
-    childB = []
-    size = min(len(genA),len(genB))
-    for i in range(size):
-        r = random.randint(0,100)
-        if r < 50:
-            childA.append(genA[i])
-            childB.append(genB[i])
-        else:
-            childA.append(genB[i])
-            childB.append(genA[i])
-    if len(genA)< len(genB):
-        for i in range(size,len(genB)):
-            childB.append(genB[i])
-    else:
-        for i in range(size,len(genA)):
-            childA.append(genA[i])
-    return [''.join(childA),''.join(childB)]
-
-def breed_2px(genA,genB):
-    childA = []
-    childB = []
-    r = []
-    size = min(len(genA),len(genB))
-    for i in range(2):
-        r.append(random.randint(0,size))
-    
-    for i in range(0,min(r)):
-        childA.append(genA[i])
-        childB.append(genB[i])
-    for i in range(min(r),max(r)):
-        childA.append(genB[i])
-        childB.append(genA[i])
-    for i in range(max(r),size):
-        childA.append(genA[i])
-        childB.append(genB[i])
-    if len(genA)< len(genB):
-        for i in range(size,len(genB)):
-            childB.append(genB[i])
-    if len(genA)> len(genB):
-        for i in range(size,len(genA)):
-            childA.append(genA[i])
-    return [''.join(childA),''.join(childB)]
-
 def mutate(gen):
     ngen = []
     for c in gen:
@@ -86,10 +23,35 @@ def mutate(gen):
     
     return ''.join(ngen)
 
+def count_matches(str1, str2):
+    matches = 0
+    for (c1, c2) in zip(str1, str2):
+        if c1 == c2:
+            matches += 1
+    return matches
+
+def best_offset(genA, genB):
+    best_offset = 0
+    best_matches = 0
+    for k in range(-len(genB)+1, len(genA)):
+        matches = count_matches(
+            genA[max(0, k):min(len(genA), len(genB)+k)],
+            genB[max(0, -k):min(len(genB), len(genA)-k)]
+        )
+        if matches > best_matches:
+            best_offset = k
+            best_matches = matches
+    return best_offset
+
+def breed_aligned(genA, genB):
+    offset = best_offset(genA, genB)
+    k = random.randint(max(0, offset), min(len(genA), len(genB)+offset))
+    return (genA[:k] + genB[k-offset:], genB[:k-offset] +genA[k:])
+
 def breed(genA, genB):
     (genA, genB) = breed_cs(genA, genB)
     while random.uniform(0,1) <= REBREEDING_CHANCE:
-        (genA, genB) = breed_cs(genA, genB)
+        (genA, genB) = breed_aligned(genA, genB)
     if random.randint(1,2) == 1:
         return mutate(genA)
     else:
