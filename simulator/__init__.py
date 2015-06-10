@@ -68,6 +68,15 @@ class Simulator:
         self.next_breed = random.expovariate(1.0/BREEDING_PERIOD)
         self.new_genomes = []
 
+    def insert_animal(self, genome):
+        a = Animal(genome, PHEROMONES)
+        a.teleport(
+            random.randrange(0, self.width, 1),
+            random.randrange(0, self.height, 1),
+            random.uniform(0, 6.28)
+        )
+        self.animals.append(a)
+
     def update(self, timestep):
         self.next_food -= timestep
         if self.next_food <= 0.0:

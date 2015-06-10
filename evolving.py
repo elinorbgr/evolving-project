@@ -24,11 +24,14 @@ def main():
     clock = pygame.time.Clock()
     s.fill((255,255,255))
 
-    #genomes = ["+133M10l-33M220lMx+Ld-33L220dNx"]
-
-    genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
-
-    sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
+    if len(sys.argv) < 2:
+        genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
+        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
+    else:
+        sim = Simulator(WIDTH, HEIGHT, 0, [])
+        with open(sys.argv[1]) as f:
+            for line in f:
+                sim.insert_animal(line.strip())
 
     while True:
         deltatime = float(clock.tick(50)) / 1000
