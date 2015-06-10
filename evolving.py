@@ -55,7 +55,7 @@ def main():
         # display the animals
         for a in sim.animals:
             # choose a color:
-            col = pygame.Color(int((100-a.energy)*255/100), int(a.energy*255/100), 0, 255)
+            col = pygame.Color(int((100-max(0,a.energy))*255/100), int(max(0,a.energy)*255/100), 0, 255)
             # draw a head
             pygame.draw.circle(s, col, (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5)
             pygame.draw.circle(s, (0,0,0), (int(a.x + math.cos(a.theta)*7), int(a.y + math.sin(a.theta)*7)), 5, 1)
