@@ -12,7 +12,7 @@ from conf import INIT_GENOME_LEN, INIT_GENOME_POOL
 PHEROMONES_COLORS = [
     (0,0,255),
     (255,0,0),
-    (0,255,0),
+    (0,128,0),
     (0,0,0)
 ]
 
@@ -49,7 +49,10 @@ def main():
 
         # display the objects
         for f in sim.objects:
-            pygame.draw.circle(s, PHEROMONES_COLORS[f.kind], (f.x, f.y), 5)
+            i = max(min(f.amount, 10),0)/10.0
+            (r,g,b) = PHEROMONES_COLORS[f.kind]
+            col = (int(255*(1.0-i) + r*i),int(255*(1.0-i) + g*i),int(255*(1.0-i) + b*i), 255)
+            pygame.draw.circle(s, col, (f.x, f.y), 5)
             pygame.draw.circle(s, (0,0,0), (f.x, f.y), 5, 1)
 
         # display the animals
