@@ -40,7 +40,7 @@ class Poison:
     def update(self, animals, pheromones, timedelta):
         for a in animals:
             if distance(a.x, a.y, self.x, self.y) < 8:
-                consume = min(self.amount, 100 - a.energy)
+                consume = min(self.amount, a.energy)
                 self.amount -= consume
                 a.energy -= consume
                 if self.amount <= 0:
