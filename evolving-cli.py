@@ -28,14 +28,16 @@ def main():
         next_output -= deltatime
         if next_output <= 0:
             next_output = OUTPUT_PERIOD
-            with open(OUTPUT_PREFIX + str(time) + ".txt", 'w') as f:
+            with open(OUTPUT_PREFIX + "{:.2f}.txt".format(time), 'w') as f:
                 f.writelines(a.brain.genome + "\n" for a in sim.animals)
         # update state
         time += deltatime
         sim.update(deltatime)
         # debug
         if DEBUG_TIME:
-            print("time: " + str(time))
+            mini = min(a.energy for a in sim.animals)
+            maxi = max(a.energy for a in sim.animals)
+            print("{} ({:.2f} -- {:.2f}) alive at {:.2f}".format(len(sim.animals), mini, maxi, time))
 
 if __name__ == '__main__':
     main()
