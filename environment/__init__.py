@@ -15,7 +15,7 @@ class Food:
         self.tick = 1.0
         self.kind = 0
 
-    def update(self, animals, pheromones, timedelta):
+    def update(self, animals, pheromones, timedelta,pred):
         for a in animals:
             if distance(a.x, a.y, self.x, self.y) < 8:
                 consume = min(self.amount, 100 - a.energy)
@@ -37,10 +37,17 @@ class Poison:
         self.tick = 1.0
         self.kind = 1
 
-    def update(self, animals, pheromones, timedelta):
+    def update(self, animals, pheromones, timedelta,pred):
+        p = pred[-1]
         for a in animals:
-            if distance(a.x, a.y, self.x, self.y) < 8:
+            if distance(a.x, a.y, self.x, self.y) < 12:
                 consume = min(self.amount, a.energy)
+                self.amount -= consume
+                a.energy -= consume
+                if self.amount <= 0:
+                    break
+            if distance(a.x, a.y, p.x, p.y) < 8:
+                consume = a.energy
                 self.amount -= consume
                 a.energy -= consume
                 if self.amount <= 0:
@@ -49,4 +56,5 @@ class Poison:
         self.amount -= timedelta * OBJECTS_DECAY
         if self.amount > 0 and self.tick <= 0:
             self.tick = 1.0
+            pheromones.append(Pheromone(2,p.x,p.y,10,20))
             pheromones.append(Pheromone(self.kind, self.x, self.y, self.amount, 10))

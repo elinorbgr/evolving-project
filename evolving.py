@@ -8,6 +8,7 @@ from simulator import Simulator
 
 from conf import WIDTH, HEIGHT, ANIMAL_COUNT, TIME_TICK
 from conf import INIT_GENOME_LEN, INIT_GENOME_POOL
+from conf import PRED_COUNT
 
 PHEROMONES_COLORS = [
     (0,0,255),
@@ -23,12 +24,13 @@ def main():
     s = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     s.fill((255,255,255))
-
+    
     if len(sys.argv) < 2:
         genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
-        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
+        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT,PRED_COUNT, genomes)
     else:
-        sim = Simulator(WIDTH, HEIGHT, 0, [])
+        sim = Simulator(WIDTH, HEIGHT, 0,0, [])
+        sim.insert_predator()
         with open(sys.argv[1]) as f:
             for line in f:
                 sim.insert_animal(line.strip())
@@ -68,7 +70,12 @@ def main():
             # draw a body
             pygame.draw.circle(s, col, (int(a.x), int(a.y)), 8)
             pygame.draw.circle(s, (0,0,0), (int(a.x), int(a.y)), 8, 1)
-
+        # display the predators
+        for p in sim.predators:
+            # choose a color:
+            col = pygame.Color(0,0,0,0)
+            pygame.draw.circle(s, col, (int(p.x), int(p.y)), 12)
+            pygame.draw.circle(s, (0,0,0), (int(p.x), int(p.y)), 12, 1)
         pygame.display.update()
 
 

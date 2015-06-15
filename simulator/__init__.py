@@ -1,6 +1,7 @@
 import math, random
 from multiprocessing import Pool, Manager
 from animal import Animal
+from predator import Predator
 from environment import Food, Poison
 
 from neural.breeding import breed
@@ -40,14 +41,49 @@ def update_animal(animal, pheromones, timestep, width, height):
     if animal.y < 0: animal.y += height
     return (animal, new_pheromones)
 
+def chasePrey(predators,prey,width,height,timestep):
+    p = predators[-1]
+    speed = ANIMALS_BASE_SPEED*timestep*0.5
+    diff = [p.x-prey[0],p.y-prey[1]]
+
+    #Nooby movement 
+    if diff[0] > 0:
+        p.x -= speed
+    if diff[0] < 0:
+        p.x += speed
+    if diff[1] > 0:
+        p.y -= speed
+    if diff[1] < 0:
+        p.y += speed
+        
+    if p.x > width: p.x -= width
+    if p.x < 0: p.x += width
+    if p.y > height: p.y -= height
+    if p.y < 0: p.y += height
+
+
+def findPrey(predators,animals):
+    p = predators[-1]
+    closest = 999999
+    for a in animals:
+        diff = [p.x-a.x,p.y-a.y]
+        dist = math.sqrt(diff[0]**2+diff[1]**2)
+        if dist<closest:
+            prey = a
+            closest = dist
+    return [prey.x,prey.y]
+            
+
+
 class Simulator:
-    def __init__(self, space_width, space_height, animal_count, genomes):
+    def __init__(self, space_width, space_height, animal_count, pred_count, genomes):
         self.pool = Pool()
         self.manager = Manager()
 
         self.width = space_width
         self.height = space_height
         self.genomes = genomes
+        self.predators = [ Predator() for _ in range(pred_count) ]
         self.animals = [ Animal(random.choice(genomes), PHEROMONES) for _ in range(animal_count) ]
         self.objects = [
             Food(
@@ -76,8 +112,21 @@ class Simulator:
             random.uniform(0, 6.28)
         )
         self.animals.append(a)
+    def insert_predator(self):
+        p = Predator()
+        p.teleport(
+            random.randrange(0, self.width, 1),
+            random.randrange(0, self.height, 1),
+            random.uniform(0, 6.28)
+        )
+        self.predators.append(p)
+
 
     def update(self, timestep):
+
+        prey = findPrey(self.predators,self.animals)
+        chasePrey(self.predators,prey,self.width, self.height,timestep)
+        
         self.next_food -= timestep
         if self.next_food <= 0.0:
             self.next_food = random.expovariate(1.0/FOOD_PERIOD)
@@ -135,7 +184,7 @@ class Simulator:
             self.pheromones.extend(fl)
 
         for f in self.objects:
-            f.update(self.animals, self.pheromones, timestep)
+            f.update(self.animals, self.pheromones, timestep,self.predators)
 
         for f in self.pheromones:
             f.tick(timestep)
