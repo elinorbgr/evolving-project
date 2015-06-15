@@ -8,13 +8,14 @@ from simulator import Simulator
 from conf import WIDTH, HEIGHT, ANIMAL_COUNT, TIME_TICK
 from conf import INIT_GENOME_LEN, INIT_GENOME_POOL
 from conf import OUTPUT_PERIOD, OUTPUT_PREFIX, DEBUG_TIME
+from conf import PREDATOR_COUNT
 
 def main():
     if len(sys.argv) < 2:
         genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
-        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, genomes)
+        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, PREDATOR_COUNT, genomes)
     else:
-        sim = Simulator(WIDTH, HEIGHT, 0, [])
+        sim = Simulator(WIDTH, HEIGHT, 0, PREDATOR_COUNT, [])
         with open(sys.argv[1]) as f:
             for line in f:
                 sim.insert_animal(line.strip())

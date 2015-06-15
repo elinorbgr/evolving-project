@@ -8,7 +8,7 @@ from simulator import Simulator
 
 from conf import WIDTH, HEIGHT, ANIMAL_COUNT, TIME_TICK
 from conf import INIT_GENOME_LEN, INIT_GENOME_POOL
-from conf import PRED_COUNT
+from conf import PREDATOR_COUNT
 
 PHEROMONES_COLORS = [
     (0,0,255),
@@ -27,10 +27,9 @@ def main():
     
     if len(sys.argv) < 2:
         genomes = [ random_genome(INIT_GENOME_LEN) for _ in range(INIT_GENOME_POOL) ]
-        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT,PRED_COUNT, genomes)
+        sim = Simulator(WIDTH, HEIGHT, ANIMAL_COUNT, PREDATOR_COUNT, genomes)
     else:
-        sim = Simulator(WIDTH, HEIGHT, 0,0, [])
-        sim.insert_predator()
+        sim = Simulator(WIDTH, HEIGHT, 0, PREDATOR_COUNT, [])
         with open(sys.argv[1]) as f:
             for line in f:
                 sim.insert_animal(line.strip())
